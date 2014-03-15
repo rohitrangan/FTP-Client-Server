@@ -23,19 +23,31 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define DELIM "\r\n"
+
 using namespace std;
 
 class Socket
 {
 private:
-    string hostname;
-    int port;
-    addrinfo* serverAddrinfo;
-    int clientSocket;
+    int socketFD;
 
 public:
-    Socket (string hostname, int port);
+    Socket ();
+    Socket (int sockfd);
     ~Socket ();
+    int connect (string host, int port);
+    int send (string data);
+    int send (char* data, size_t size);
+    string recv (size_t len);
+    ssize_t recv (char* data, size_t len);
+    int bind ();
+    int listen (int backlog);
+    Socket accept ();
+    string getSourceAddr ();
+    int getSourcePort ();
+    string getDestAddr ();
+    int getDestPort ();
 };
 
 #endif  /* LAB3_SOCKET_H_ */
