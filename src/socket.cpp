@@ -131,6 +131,11 @@ int Socket::getDestPort ()
     return ntohs (dest_addr.sin_port);
 }
 
+int Socket::close ()
+{
+    return ::close (socketFD);
+}
+
 Socket::~Socket ()
 {
 }

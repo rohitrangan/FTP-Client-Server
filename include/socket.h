@@ -48,6 +48,7 @@ public:
     int getSourcePort ();
     string getDestAddr ();
     int getDestPort ();
+    int close ();
 };
 
 #endif  /* LAB3_SOCKET_H_ */

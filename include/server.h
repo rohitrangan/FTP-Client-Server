@@ -9,6 +9,7 @@
 #define LAB3_SERVER_H_
 
 #include "../include/socket.h"
+#include "../include/request.h"
 #include "../include/response.h"
 #include "../include/return_code.h"
 
@@ -38,7 +39,7 @@ private:
 public:
     FTPServer (int port);
     int start ();
-    void serveIncoming (Socket control);
+    void serveConnection (Socket control);
     bool processRequest (string command, string args, Socket control);
 };
 

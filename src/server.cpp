@@ -25,14 +25,29 @@ FTPServer::FTPServer (int port) : listenPort (port)
 {
 }
 
+void FTPServer::serveConnection (Socket control)
+{
+    /* Sending a reply. */
+    string recv_data;
+    control.send (Response (SERVICE_READY, SERVER_NAME).getString ());
+
+    while ((recv_data = control.recv (RECV_SIZE)).length () > 0)
+    {
+        //Request r1 = Request::parseRequest (recv_data);
+        //if (processRequest (r1.getCommand (), r1.getArg ()))
+        //    break;
+    }
+}
+
 int FTPServer::start ()
 {
     int status;
-    if ((status = listenSocket.bind (port)) < 0)
+    if ((status = listenSocket.bind (listenPort)) < 0)
         return status;
     if ((status = listenSocket.listen (BACKLOG)) < 0)
         return status;
 
+    cout << "Server Initialized!\n\n";
     while (true)
     {
         Socket incoming = listenSocket.accept ();
@@ -42,20 +57,6 @@ int FTPServer::start ()
     }
 
     return 0;
-}
-
-void FTPServer::serveIncoming (Socket control)
-{
-    /* Sending a reply. */
-    string recv_data;
-    control.send (Response (SERVICE_READY, SERVER_NAME).getString ());
-
-    while ((recv_data = control.recv (RECV_SIZE)).length () > 0)
-    {
-        Request r1 = Request::parseRequest (recv_data);
-        if (processRequest (r1.getCommand (), r1.getArg ()))
-            break;
-    }
 }
 
 bool FTPServer::processRequest (string command, string args, Socket control)
@@ -92,7 +93,7 @@ bool FTPServer::processRequest (string command, string args, Socket control)
     {
         control.send (Response (OPENING_DATA,
                                 "Sending Directory Information").getString ());
-        string ls_data = ls (arg);
+        string ls_data = ls (args);
         dataSocket.send (ls_data);
         dataSocket.close ();
         control.send (Response (DATA_CONN_CLOSE, "Success").getString ());
