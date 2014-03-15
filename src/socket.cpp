@@ -1,13 +1,12 @@
 /*
-    CS349 Assignment3 - client.cpp
+    CS349 Assignment3 - socket.cpp
     Author:- Rohit Rangan
     Author:- Siddharth Ancha
 
-    This file contains the definitions for the client part of the
-    assignment.
+    Contains the wrapper functions for a TCP socket.
 */
 
-#include "../include/client.h"
+#include "../include/socket.h"
 
 FTPClient::FTPClient (string hostname, int port) : serverHostname (hostname),
                                                    serverPort (port)

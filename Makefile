@@ -1,9 +1,9 @@
 # Makefile for the C++ code.
 CXX=c++
 CXXFLAGS= -Wall -Wextra
-CXXSRCS1=client.cpp
+CXXSRCS1=src/client.cpp
 #util.cpp http_util.cpp content_type.cpp
-CXXSRCS2=server.cpp
+CXXSRCS2=src/server.cpp
 #util.cpp http_util.cpp content_type.cpp
 CXXOBJS1=$(CXXSRCS1:.cpp=.o)
 CXXOBJS2=$(CXXSRCS2:.cpp=.o)
