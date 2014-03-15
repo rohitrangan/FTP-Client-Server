@@ -9,56 +9,47 @@
 
 #include "../include/client.h"
 
-FTPClient::FTPClient (string hostname, int port) : serverHostname (hostname),
-                                                   serverPort (port)
-{
-    const char* server_addr = serverHostname.c_str ();
-    stringstream s1;
-    s1 << serverPort;
-    const char* give_port = s1.str ().c_str ();
-    int status;
-    addrinfo hints;
-    addrinfo* servinfo;
-    memset (&hints, 0, sizeof (hints));
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
-    if ((status = getaddrinfo (server_addr, give_port, &hints, &servinfo)) != 0)
-    {
-        std::cerr << CLIENT_DISP_ERR << "Cannot obtain IP address of ";
-        std::cerr << server_addr << "\n";
-        exit (1);
-    }
-    serverAddrinfo = servinfo;
 
-    /* Creating the socket. */
-    int fd;
-    if ((fd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        int errsv = errno;
-        std::cerr << CLIENT_DISP_ERR << "Cannot Create Socket, Error ";
-        std::cerr << errsv << "\n";
-        exit (1);
-    }
-    clientSocket = fd;
+FTPClient(string _hostname, int _port){
+    controlSocket.setHost(_hostname, _port);
+    hostname = controlSocket.getSourceAddr();
+    port = controlSocket.getSourcePort(); 
+    controlSocket.connect();
 }
 
-int FTPClient::connectServer ()
-{
-    /* Connecting to the server. */
-    if (connect (clientSocket, serverAddrinfo->ai_addr,
-                 serverAddrinfo->ai_addrlen) < 0)
-    {
-        int errsv = errno;
-        std::cerr << CLIENT_DISP_ERR << "Cannot Connect to Server, Error ";
-        std::cerr << errsv << "\n";
-        exit (1);
+FTPClient::sendPort(){
+    stringstream s;
+    s << "PORT ";
+    for(int i = 0; i < hostname.size(); i++){
+        s << hostname[i]=='.'?',':hostname[i];
     }
-    std::cout << "Conected to " << serverHostname << ":" << serverPort;
-    std::cout << "\n";
-    return 0;
+    s << ',' << port/256 << ',' << port%256 << DELIM;
+    controlSocket.send(s.str());
 }
 
-FTPClient::~FTPClient ()
-{
-    freeaddrinfo (serverAddrinfo);
+ftpClient::ls(){
+    sendPort();
+    stringstream s;
+    s << "LIST ";
+    
+}
+
+FTPClient::ncd(){
+    char* dirName = strtok(NULL, "\n");
+    sys::cd(dirName);
+}
+
+FTPClient::nls(){
+    char* dirName = strtok(NULL, "\n");
+    if(dirName) cout<< sys::ls(dirName);
+    else cout << sys::ls("");
+}
+
+FTPClient::npwd(){
+    char* dirName = strtok(NULL, "\n");
+    if(dirName) cout<< sys::pwd();
+}
+
+FTPClient::quit(){
+    exit();
 }

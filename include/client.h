@@ -9,36 +9,32 @@
 #ifndef LAB3_CLIENT_H_
 #define LAB3_CLIENT_H_
 
-#include <cerrno>
+#include "../include/socket.h"
+
 #include <string>
-#include <cstring>
-#include <cstdlib>
-#include <sstream>
-#include <iostream>
 
-#include <netdb.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+class FTPClient {
 
-using namespace std;
+ private:
+    socket controlSocket;
+    string hostname;
+    int port;
 
-#define CLIENT_DISP_ERR "ERROR! "
+    void sendPort();
 
-class FTPClient
-{
-private:
-    string serverHostname;
-    int serverPort;
-    addrinfo* serverAddrinfo;
-    int clientSocket;
+ public:
 
-public:
-    FTPClient (string hostname, int port);
-    ~FTPClient ();
-    int connectServer ();
+    void FTPClient(string hostname, int port);
+
+    //n stands for 'NOT'. for eg. nls means !ls.
+    void ncd();
+    void nls();
+    void npwd();
+
+    void ls();
+    
+    void quit() 
 };
+
 
 #endif  /* LAB3_CLIENT_H_ */
