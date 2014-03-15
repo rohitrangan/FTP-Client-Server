@@ -1,0 +1,167 @@
+CS 349 - Assignment 3
+
+Authors:- 
+Rohit Rangan
+11012333
+
+Siddharth Ancha
+110101xx
+
+-------------------------------------------------------------------------------
+PROJECT DESIGN
+-------------------------------------------------------------------------------
+
+
+                                          -------------
+                                          |/---------\|
+                                          ||   User  ||    --------
+                                          ||Interface|<--->| User |
+                                          |\----^----/|    --------
+                ----------                |     |     |
+                |/------\|  FTP Commands  |/----V----\|
+                ||Server|<---------------->|   User  ||
+                ||  PI  ||   FTP Replies  ||    PI   ||
+                |\--^---/|                |\----^----/|
+                |   |    |                |     |     |
+    --------    |/--V---\|      Data      |/----V----\|    --------
+    | File |<--->|Server|<---------------->|  User   |<--->| File |
+    |System|    || DTP  ||   Connection   ||   DTP   ||    |System|
+    --------    |\------/|                |\---------/|    --------
+                ----------                -------------
+
+                Server-FTP                   USER-FTP
+
+    NOTES: 1. The data connection may be used in either direction.
+           2. The data connection need not exist all of the time.
+
+                    Figure 1  Model for FTP Use
+
+-------------
+Server Design
+-------------
+
+We need the server to support multiple connections at a time. To support this,
+we process each new client connection in a separate thread. We process both the
+data and the control connections for a particular user in a single thread, i.e.
+once a data connection is initialized, no control packets can be sent. We close
+the data connection on completion of the transfer. Once the client issues a
+quit command, we close the control connection, thereby terminating all
+communications.
+
+-------------
+Client Design
+-------------
+
+The client connects to the advertised port of the server. After establishing
+the connection, the client starts an interactive shell. This shell processes
+input from the user and sends a request to the server. We print the server's
+response to the terminal and store/send a file from/to the server. Once the
+user types the quit command, we close the connection to the server and exit.
+
+---------------
+Project Modules
+---------------
+
+We have the following modules:-
+
+1. Client Module - Contains the main code for the client. This module's only
+                   function is to send/receive messages to/from the server and
+                   call functions to process the messages received from the
+                   server. The module also contains an interactive shell which
+                   processes user input and transforms them into messages for
+                   the client to send.
+
+2. Message Module - Contains fucntions to interpret messages from the server
+                    as well as the client. Also contains functions to package
+                    messages from the server and the client.
+
+3. Server Module - Contains the main code for the server. This module's only
+                   function is to send/receive messages to/from the client(s)
+                   and call functions to process the messages.
+
+------------------
+Module Interaction
+------------------
+
+Client Side
+-----------
+
+
+          Sending messages
+          for communication
+          with the server.
+        --------     ---------
+        |Client|<--->|Message|
+        |Module|     |Module |
+        --------     ---------
+            ^           ^
+             \         /
+    Starting  \       / Processing commands
+    the module \     / and creating messages
+    to process  \   / in reply to those.
+    data.        \ /
+                  V
+            -------------
+            |Interactive|
+            |   Shell   |
+            -------------
+
+    Figure 2  Client side module interaction
+
+
+
+Server Side
+-----------
+
+
+              Sending messages
+              for communication
+              with the client.
+            --------     ---------
+            |Server|<--->|Message|
+            |Module|     |Module |
+            --------     ---------
+
+    Figure 3  Server side module interaction
+
+
+(Interaction between the client and the server in shown in Figure 1)
+
+
+-------------------------------------------------------------------------------
+PROJECT DIRECTORY STRUCTURE
+-------------------------------------------------------------------------------
+
+--{root}                    - The assignment's root directory.
+  +--README                 - This file!
+
+-------------------------------------------------------------------------------
+REQUIREMENTS
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+INSTRUCTIONS TO COMPILE
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+INSTRUCTIONS TO RUN THE CODE
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+SAMPLE OUTPUT - SERVER
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+SAMPLE OUTPUT - CLIENT
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+NOTE
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
