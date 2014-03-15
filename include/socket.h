@@ -27,15 +27,15 @@
 
 using namespace std;
 
-class socket
+class Socket
 {
 private:
     int socketFD;
 
 public:
-    socket ();
-    socket (int sockfd);
-    ~socket ();
+    Socket ();
+    Socket (int sockfd);
+    ~Socket ();
     int connect (string host, int port);
     int send (string data);
     int send (char* data, size_t size);
@@ -43,7 +43,7 @@ public:
     ssize_t recv (char* data, size_t len);
     int bind ();
     int listen (int backlog);
-    socket accept ();
+    Socket accept ();
     string getSourceAddr ();
     int getSourcePort ();
     string getDestAddr ();

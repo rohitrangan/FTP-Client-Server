@@ -8,7 +8,7 @@
 
 #include "../include/socket.h"
 
-socket::socket ()
+Socket::Socket ()
 {
     /* Creating the socket. */
     int fd;
@@ -22,12 +22,12 @@ socket::socket ()
     socketFD = fd;
 }
 
-socket::socket (int socketfd)
+Socket::Socket (int socketfd)
 {
     socketFD = socketfd;
 }
 
-int socket::connect (string host, int port)
+int Socket::connect (string host, int port)
 {
     /* Determining server's IP address. */
     const char* server_addr = host.c_str ();
@@ -48,17 +48,17 @@ int socket::connect (string host, int port)
     return ::connect (socketFD, serv_info->ai_addr, serv_info->ai_addrlen);
 }
 
-int socket::send (string data)
+int Socket::send (string data)
 {
     return ::send (socketFD, data.c_str (), data.length (), 0);
 }
 
-int socket::send (char* data, int size)
+int Socket::send (char* data, int size)
 {
     return ::send (socketFD, data, size, 0);
 }
 
-string socket::recv (int len)
+string Socket::recv (int len)
 {
     char* recv_buf = new char[len + 1];
     int recv_len = ::recv (socketFD, recv_buf, len, 0);
@@ -68,12 +68,12 @@ string socket::recv (int len)
     return string (recv_buf);
 }
 
-ssize_t socket::recv (char* data, int len)
+ssize_t Socket::recv (char* data, int len)
 {
     return ::recv (sockFD, data, len, 0);
 }
 
-int socket::bind ()
+int Socket::bind ()
 {
     sockaddr_in myaddr;
     memset ((char*)&myaddr, 0, sizeof(myaddr));
@@ -83,19 +83,19 @@ int socket::bind ()
     return ::bind (socketFD, (sockaddr *)&myaddr, sizeof (myaddr));
 }
 
-int socket::listen (int backlog)
+int Socket::listen (int backlog)
 {
     return ::listen (sockFD, backlog);
 }
 
-socket socket::accept ()
+Socket Socket::accept ()
 {
     sockaddr_storage incoming;
     socklen_t addr_size;
-    return (socket (::accept (socketFD, (sockaddr*)&incoming, &addr_size)));
+    return (Socket (::accept (socketFD, (sockaddr*)&incoming, &addr_size)));
 }
 
-string socket::getSourceAddr ()
+string Socket::getSourceAddr ()
 {
     char src[INET_ADDRSTRLEN];
     sockaddr_t src_addr;
@@ -105,7 +105,7 @@ string socket::getSourceAddr ()
     return string (src);
 }
 
-int socket::getSourcePort ()
+int Socket::getSourcePort ()
 {
     sockaddr_t src_addr;
     socklen_t addr_size;
@@ -113,7 +113,7 @@ int socket::getSourcePort ()
     return ntohs (src_addr.sin_port);
 }
 
-string socket::getDestAddr ()
+string Socket::getDestAddr ()
 {
     char dest[INET_ADDRSTRLEN];
     sockaddr_t dest_addr;
@@ -123,7 +123,7 @@ string socket::getDestAddr ()
     return string (dest);
 }
 
-int socket::getDestPort ()
+int Socket::getDestPort ()
 {
     sockaddr_t dest_addr;
     socklen_t addr_size;
@@ -131,7 +131,6 @@ int socket::getDestPort ()
     return ntohs (dest_addr.sin_port);
 }
 
-socket::~socket ()
+Socket::~Socket ()
 {
-    freeaddrinfo (serverAddrinfo);
 }
