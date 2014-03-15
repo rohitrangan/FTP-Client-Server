@@ -73,7 +73,7 @@ ssize_t Socket::recv (char* data, int len)
     return ::recv (sockFD, data, len, 0);
 }
 
-int Socket::bind ()
+int Socket::bind (int port)
 {
     sockaddr_in myaddr;
     memset ((char*)&myaddr, 0, sizeof(myaddr));
