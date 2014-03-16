@@ -26,9 +26,6 @@ Icon
 .Spotlight-V100
 .Trashes
 
-# All files starting with response.
-response*
-
 # The dependency file created by the compiler.
 .depend
 
