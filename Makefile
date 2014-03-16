@@ -1,4 +1,9 @@
+# CS349 Assignment3 - Makefile
+# Author:- Rohit Rangan
+# Author:- Siddharth Ancha
+#
 # Makefile for the C++ code.
+
 CXX=c++
 CXXFLAGS= -Wall -Wextra
 CXXSRCS1=src/client_main.cpp src/client.cpp

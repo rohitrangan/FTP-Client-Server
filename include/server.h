@@ -1,6 +1,7 @@
 /*
     CS349 Assignment3 - server.h
     Author:- Rohit Rangan
+    Author:- Siddharth Ancha
 
     This file contains the declarations for the FTP server.
 */
