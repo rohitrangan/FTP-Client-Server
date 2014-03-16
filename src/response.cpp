@@ -18,3 +18,21 @@ string Response::getString ()
     s << returnCode << " " << args << DELIM;
     return s.str ();
 }
+
+Response Response::parseResponse (string arg)
+{
+    int n1 = arg.find (" ");
+    int code = atoi (arg.substr (0, n1).c_str ());
+    string args = arg.substr (n1+1, string::npos);
+    return Response (code, args);
+}
+
+int Response::getReturnCode ()
+{
+    return code;
+}
+
+string Response::getArgs ()
+{
+    return args;
+}

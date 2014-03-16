@@ -13,6 +13,7 @@
 
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 class Response
 {
@@ -23,6 +24,9 @@ private:
 public:
     Response (int code, string arg);
     string getString ();
+    static Response parseResponse (string arg);
+    int getReturnCode ();
+    string getArgs ();
 };
 
 #endif  /* LAB3_RESPONSE_H_ */
