@@ -6,7 +6,7 @@ bool Request::isLocalFile(char* filename){
 	return S_ISREG(st_buf.st_mode);
 }
 
-int Request::parse(char* input){
+int Request::parseTerminalCommand(char* input){
 	char *word1, *word2;
 	word1 = strtok(input, " ");
 	word2 = strtok(NULL, " ");
@@ -56,10 +56,33 @@ int Request::parse(char* input){
 		return 0;
 	}
 
-	argument = string(word2);
+	arg = string(word2);
 	return 1;
 }
 
+
+void Request::parseControlMessage(char* input){
+    char *word1, *word2;
+    word1 = strtok(input, " \r\n");
+    if(string(word1) == "CWD") type = CWD;
+    else if(string(word1) == "LIST") type = LIST;
+    else if(string(word1) == "PORT") type = PORT;
+    else if(string(word1) == "PWD") type = PWD;
+    else if(string(word1) == "QUIT") type = QUIT;
+    else if(string(word1) == "RETR") type = RETR;
+    else if(string(word1) == "STOR") type = STOR;
+
+    word2 = strtok(NULL, "\r\n");
+    arg = string(word2);
+}
+
+commands Request::getCommand(){
+    return type;
+}
+
+string getArg(){
+    return arg;
+}
 
 
 

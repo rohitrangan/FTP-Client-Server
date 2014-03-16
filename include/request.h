@@ -25,20 +25,26 @@ enum commands {
 	QUIT,
 	RETR,
 	STOR,
-	TYPE,
 };
 
 class Request {
  public:
  	commands type;
- 	string argument;
+ 	string arg;
 
  	bool isLocalFile(char* filename);
 
 
  	//Parses termnial command and converts it into the request class format
  	// Returns 1 if parsing successful and 0 if there is an error.
- 	int parse(char* input);
+ 	int parseTerminalCommand(char* input);
+
+    //Parses control message received by server. It will always be successful.
+    void parseControlMessage(char* input);
+
+    commands getCommand();
+
+    string getArg(); 
 };
 
 #endif

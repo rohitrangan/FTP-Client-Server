@@ -42,7 +42,7 @@ public:
     FTPServer (int port);
     int start ();
     void serveConnection (Socket control);
-    bool processRequest (string command, string args, Socket control);
+    bool processRequest (commands command, string args, Socket control);
 };
 
 #endif  /* LAB3_SERVER_H_ */
