@@ -27,7 +27,7 @@ int main (int argc, char* argv[])
     int status = server.start ();
     if (status < 0)
     {
-        cout << "ERROR! Server could not start\n";
+        cout << "ERROR! Server could not start\n\n";
         return 1;
     }
 

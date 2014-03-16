@@ -6,18 +6,17 @@
 
 CXX=c++
 CXXFLAGS= -Wall -Wextra
-CXXSRCS1=src/client_main.cpp src/client.cpp
-#util.cpp http_util.cpp content_type.cpp
+CXXSRCS1=src/client_main.cpp src/client.cpp src/socket.cpp src/request.cpp \
+		 src/response.cpp
 CXXSRCS2=src/server_main.cpp src/server.cpp src/socket.cpp src/request.cpp \
 		 src/response.cpp
-#util.cpp http_util.cpp content_type.cpp
 CXXOBJS1=$(CXXSRCS1:.cpp=.o)
 CXXOBJS2=$(CXXSRCS2:.cpp=.o)
 LIBS=
 INCLUDES=-I./include
 TARGET1=client
 TARGET2=server
-#DEBUGFLAGS=-g -ggdb -O0 -fno-inline
+DEBUGFLAGS=-g -ggdb -O0 -fno-inline
 
 # Required for the target clean.
 RM=rm -rf

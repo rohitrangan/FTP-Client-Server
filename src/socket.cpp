@@ -63,7 +63,7 @@ string Socket::recv (size_t len)
     char* recv_buf = new char[len + 1];
     int recv_len = ::recv (socketFD, recv_buf, len, 0);
     if (recv_len < 0)
-        return NULL;
+        return string ("");
     recv_buf[recv_len] = '\0';
     return string (recv_buf);
 }

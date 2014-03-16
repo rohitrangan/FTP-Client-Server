@@ -8,7 +8,36 @@
 
 #include "../include/client.h"
 
-int main ()
+int main (int argc, char* argv[])
 {
+    if (argc != 3)
+    {
+        cout << "Usage: ./client HOST-NAME PORT-NUMBER\n\n";
+        return 0;
+    }
+
+    int port = atoi (argv[2]);
+    if (!port)
+    {
+        cout << "ERROR! Invalid port number\n\n";
+        return 1;
+    }
+
+    int dataport = 12341;
+    FTPClient client (string (argv[1]), port, dataport);
+    bool quit = false;
+    string command;
+    while (!quit)
+    {
+        cout << "ftp> ";
+        getline (cin, command);
+        cout << "command = " << command << endl;
+        char tmp_str[1000];
+        strncpy (tmp_str, command.c_str (), command.length ());
+        tmp_str[command.length ()] = '\0';
+        cout << "tmp_str = " << tmp_str << endl;
+        quit = client.processRequest (tmp_str);
+    }
+
     return 0;
 }

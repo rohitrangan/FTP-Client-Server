@@ -24,7 +24,7 @@ int Request::parseTerminalCommand(char* input){
 		cerr << "Error: Malformed command. Contains more than 2 words.\n";
 		return 0;
 	}
-
+    cout << "word1 = " << word1 << endl;
 	if(string(word1) == "pwd"){
 		type = STOR;
 	}

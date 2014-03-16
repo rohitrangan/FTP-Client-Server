@@ -16,6 +16,7 @@
 #include "../include/socket.h"
 
 #include <string>
+#include <iostream>
 
 class FTPClient {
 
@@ -29,7 +30,7 @@ class FTPClient {
  public:
 
     FTPClient(string hostname, int hostport, int _dataport);
-    void processRequest(char* input);
+    bool processRequest(char* input);
 
 };
 

@@ -24,6 +24,7 @@ string FTPServer::ls (string arg)
 
 FTPServer::FTPServer (int port) : listenPort (port)
 {
+    listenSocket = Socket ();
 }
 
 int FTPServer::start ()
