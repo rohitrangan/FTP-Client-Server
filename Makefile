@@ -36,7 +36,7 @@ $(TARGET2) : $(CXXOBJS2)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean :
-	$(RM) *.o *.dSYM $(TARGET1) $(TARGET2)
+	$(RM) src/*.o src/*.dSYM $(TARGET1) $(TARGET2)
 
 depend : .depend
 

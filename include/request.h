@@ -3,8 +3,7 @@
     Author:- Rohit Rangan
     Author:- Siddharth Ancha
 
-    This file contains the declarations for the client part of the
-    assignment.
+    This file contains the declarations for the FTP request.
 */
 
 #ifndef LAB3_REQUEST_H_

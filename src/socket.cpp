@@ -15,7 +15,7 @@ Socket::Socket ()
     if ((fd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
         int errsv = errno;
-        std::cerr << CLIENT_DISP_ERR << "Cannot Create Socket, Error ";
+        std::cerr << "Cannot Create Socket, Error ";
         std::cerr << errsv << "\n";
         exit (1);
     }
@@ -45,7 +45,7 @@ int Socket::connect (string host, int port)
         return status;
 
     /* Connecting to the server. */
-    return ::connect (socketFD, serv_info->ai_addr, serv_info->ai_addrlen);
+    return ::connect (socketFD, servinfo->ai_addr, servinfo->ai_addrlen);
 }
 
 int Socket::send (string data)
@@ -53,12 +53,12 @@ int Socket::send (string data)
     return ::send (socketFD, data.c_str (), data.length (), 0);
 }
 
-int Socket::send (char* data, int size)
+int Socket::send (char* data, size_t size)
 {
     return ::send (socketFD, data, size, 0);
 }
 
-string Socket::recv (int len)
+string Socket::recv (size_t len)
 {
     char* recv_buf = new char[len + 1];
     int recv_len = ::recv (socketFD, recv_buf, len, 0);
@@ -68,9 +68,9 @@ string Socket::recv (int len)
     return string (recv_buf);
 }
 
-ssize_t Socket::recv (char* data, int len)
+ssize_t Socket::recv (char* data, size_t len)
 {
-    return ::recv (sockFD, data, len, 0);
+    return ::recv (socketFD, data, len, 0);
 }
 
 int Socket::bind (int port)
@@ -85,7 +85,7 @@ int Socket::bind (int port)
 
 int Socket::listen (int backlog)
 {
-    return ::listen (sockFD, backlog);
+    return ::listen (socketFD, backlog);
 }
 
 Socket Socket::accept ()
@@ -98,36 +98,36 @@ Socket Socket::accept ()
 string Socket::getSourceAddr ()
 {
     char src[INET_ADDRSTRLEN];
-    sockaddr_t src_addr;
+    sockaddr_in src_addr;
     socklen_t addr_size;
-    getsockname (sockFD, (sockaddr*)&src_addr, &addr_size);
+    getsockname (socketFD, (sockaddr*)&src_addr, &addr_size);
     inet_ntop (AF_INET, &src_addr.sin_addr, src, sizeof (src));
     return string (src);
 }
 
 int Socket::getSourcePort ()
 {
-    sockaddr_t src_addr;
+    sockaddr_in src_addr;
     socklen_t addr_size;
-    getsockname (sockFD, (sockaddr*)&src_addr, &addr_size);
+    getsockname (socketFD, (sockaddr*)&src_addr, &addr_size);
     return ntohs (src_addr.sin_port);
 }
 
 string Socket::getDestAddr ()
 {
     char dest[INET_ADDRSTRLEN];
-    sockaddr_t dest_addr;
+    sockaddr_in dest_addr;
     socklen_t addr_size;
-    getpeername (sockFD, (sockaddr*)&dest_addr, &addr_size);
+    getpeername (socketFD, (sockaddr*)&dest_addr, &addr_size);
     inet_ntop (AF_INET, &dest_addr.sin_addr, dest, sizeof (dest));
     return string (dest);
 }
 
 int Socket::getDestPort ()
 {
-    sockaddr_t dest_addr;
+    sockaddr_in dest_addr;
     socklen_t addr_size;
-    getpeername (sockFD, (sockaddr*)&dest_addr, &addr_size);
+    getpeername (socketFD, (sockaddr*)&dest_addr, &addr_size);
     return ntohs (dest_addr.sin_port);
 }
 

@@ -1,3 +1,11 @@
+/*
+    CS349 Assignment3 - request.cpp
+    Author:- Rohit Rangan
+    Author:- Siddharth Ancha
+
+    This file contains the definitions for the FTP request.
+*/
+
 #include "../include/request.h"
 
 bool Request::isLocalFile(char* filename){
@@ -80,23 +88,6 @@ commands Request::getCommand(){
     return type;
 }
 
-string getArg(){
+string Request::getArg(){
     return arg;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

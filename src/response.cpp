@@ -29,7 +29,7 @@ Response Response::parseResponse (string arg)
 
 int Response::getReturnCode ()
 {
-    return code;
+    return returnCode;
 }
 
 string Response::getArgs ()
