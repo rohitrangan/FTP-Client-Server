@@ -10,46 +10,45 @@
 #include "../include/client.h"
 
 
-FTPClient(string _hostname, int _port){
-    controlSocket.setHost(_hostname, _port);
-    hostname = controlSocket.getSourceAddr();
-    port = controlSocket.getSourcePort(); 
-    controlSocket.connect();
+FTPClient::FTPClient(string hostname, int hostport, int _dataport){
+    dataport = _dataport;
+    if(dataSocket.bind(dataport) < 0){
+        cout << "Couldn't bind data socket.\n";
+        exit(1);
+    }
+    if(controlSocket.connect(hostname, hostport) < 0){
+        cout << "Unable to connect to server.\n";
+        exit(1);
+    }
+    string recv_str = controlSocket.recv(RECV_SIZE);
+    Response r = Response::parseResponse(recv_str);
+    if(r.getReturnCode() != SERVICE_READY){
+        cout << "Service Ready confirmation malformed. Terminating...\n";
+        exit(1);
+    }
+    cout << recv_str << endl;
 }
 
-FTPClient::sendPort(){
+void FTPClient::sendPort(){
     stringstream s;
     s << "PORT ";
-    for(int i = 0; i < hostname.size(); i++){
-        s << hostname[i]=='.'?',':hostname[i];
+    string hostname = controlSocket.getSourceAddr();
+    int port = 0;
+    for(int i = 0; i < (int)(hostname.size()); i++){
+        s << (hostname[i]=='.'?',':hostname[i]);
     }
     s << ',' << port/256 << ',' << port%256 << DELIM;
     controlSocket.send(s.str());
 }
 
-ftpClient::ls(){
-    sendPort();
-    stringstream s;
-    s << "LIST ";
+void FTPClient::processRequest(char* input){
+    Request r;
+    r.parseTerminalCommand(input);
     
-}
-
-FTPClient::ncd(){
-    char* dirName = strtok(NULL, "\n");
-    sys::cd(dirName);
-}
-
-FTPClient::nls(){
-    char* dirName = strtok(NULL, "\n");
-    if(dirName) cout<< sys::ls(dirName);
-    else cout << sys::ls("");
-}
-
-FTPClient::npwd(){
-    char* dirName = strtok(NULL, "\n");
-    if(dirName) cout<< sys::pwd();
-}
-
-FTPClient::quit(){
-    exit();
-}
+    if(r.getCommand() == PWD){
+       controlSocket.send(r.getRequestString());
+       string recv_str = controlSocket.recv(RECV_SIZE);
+       Response r = Response::parseResponse(recv_str);
+       cout << recv_str << endl;
+    }
+}   

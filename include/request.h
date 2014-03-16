@@ -43,7 +43,9 @@ class Request {
 
     commands getCommand();
 
-    string getArg(); 
+    string getArg();
+
+    string getRequestString();
 };
 
 #endif

@@ -10,6 +10,9 @@
 #ifndef LAB3_CLIENT_H_
 #define LAB3_CLIENT_H_
 
+#include "../include/request.h"
+#include "../include/response.h"
+#include "../include/return_code.h"
 #include "../include/socket.h"
 
 #include <string>
@@ -17,24 +20,17 @@
 class FTPClient {
 
  private:
-    socket controlSocket;
-    string hostname;
-    int port;
+    Socket controlSocket;
+    Socket dataSocket;
+    int dataport;
 
     void sendPort();
 
  public:
 
-    void FTPClient(string hostname, int port);
+    FTPClient(string hostname, int hostport, int _dataport);
+    void processRequest(char* input);
 
-    //n stands for 'NOT'. for eg. nls means !ls.
-    void ncd();
-    void nls();
-    void npwd();
-
-    void ls();
-    
-    void quit() 
 };
 
 

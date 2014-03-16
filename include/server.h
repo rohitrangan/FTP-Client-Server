@@ -24,8 +24,6 @@
 
 using namespace std;
 
-#define BACKLOG     10
-#define RECV_SIZE   1000
 #define DISP_ERR    "ERROR! "
 #define SERVER_NAME "FTP-Server"
 

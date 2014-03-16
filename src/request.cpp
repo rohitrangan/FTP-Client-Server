@@ -91,3 +91,11 @@ commands Request::getCommand(){
 string Request::getArg(){
     return arg;
 }
+
+string Request::getRequestString(){
+    stringstream s;
+    if(type == PWD)
+        s << "PWD";
+    s << DELIM;
+    return s.str();
+}
