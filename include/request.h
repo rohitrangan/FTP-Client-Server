@@ -11,6 +11,7 @@
 
 #include "socket.h"
 
+#include <cstring>
 #include <sstream>
 #include <string>
 #include <sys/stat.h>
@@ -24,23 +25,19 @@ enum commands {
 	RETR,
 	STOR,
 	TYPE,
-	NCWD,
-	NPWD,
-	NLIST
 };
 
 class Request {
- private:
+ public:
  	commands type;
  	string argument;
 
  	bool isLocalFile(char* filename);
 
- public:
 
  	//Parses termnial command and converts it into the request class format
  	// Returns 1 if parsing successful and 0 if there is an error.
- 	int parse(input);
+ 	int parse(char* input);
 };
 
 #endif
