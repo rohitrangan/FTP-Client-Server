@@ -50,12 +50,15 @@ void FTPServer::serveConnection (Socket control)
 {
     /* Sending a reply. */
     string recv_data;
+    char recv_data_str[RECV_SIZE];
     control.send (Response (SERVICE_READY, SERVER_NAME).getString ());
 
     while ((recv_data = control.recv (RECV_SIZE)).length () > 0)
     {
-        Request r1 = Request::parseRequest (recv_data);
-        if (processRequest (r1.getCommand (), r1.getArg ()))
+        strcpy(recv_data_str, recv_data.c_str());
+        Request r1;
+        r1.parseControlMessage(recv_data_str);
+        if (processRequest (r1.getCommand (), r1.getArg (), control))
         {
             control.close ();
             break;
@@ -63,9 +66,11 @@ void FTPServer::serveConnection (Socket control)
     }
 }
 
-bool FTPServer::processRequest (string command, string args, Socket control)
+//Returns true if request processed and no more requests are expected (QUIT), and
+//false if further requests are expected.
+bool FTPServer::processRequest (commands command, string args, Socket control)
 {
-    if (command == "CWD")
+    if (command == CWD)
     {
         if (chdir (args.c_str ()) < 0)
         {
@@ -78,7 +83,7 @@ bool FTPServer::processRequest (string command, string args, Socket control)
                                     "Changed Directory").getString ());
         }
     }
-    else if (command == "PWD")
+    else if (command == PWD)
     {
         char curr_dir[1024];
         getcwd (curr_dir, 1024);
@@ -93,7 +98,7 @@ bool FTPServer::processRequest (string command, string args, Socket control)
                                     string (curr_dir)).getString ());
         }
     }
-    else if (command == "LIST")
+    else if (command == LIST)
     {
         control.send (Response (OPENING_DATA,
                                 "Sending Directory Information").getString ());
@@ -102,7 +107,7 @@ bool FTPServer::processRequest (string command, string args, Socket control)
         dataSocket.close ();
         control.send (Response (DATA_CONN_CLOSE, "Success").getString ());
     }
-    else if (command == "RETR")
+    else if (command == RETR)
     {
         ifstream in_file;
         in_file.open (args.c_str (), ios::in | ios::ate);
@@ -127,7 +132,7 @@ bool FTPServer::processRequest (string command, string args, Socket control)
             delete[] file_data;
         }
     }
-    else if (command == "STOR")
+    else if (command == STOR)
     {
         ofstream out_file;
         out_file.open (args.c_str (), ios::out);
@@ -142,9 +147,8 @@ bool FTPServer::processRequest (string command, string args, Socket control)
             control.send (Response (TRANSFER_START,
                                     "Start file send").getString ());
             int recv_len;
-            while ((recv_len = dataSocket.recv (file_data, RECV_SIZE-1)) > 0)
+            while ((recv_len = dataSocket.recv (file_data, RECV_SIZE)) > 0)
             {
-                file_data[recv_len] = '\0';
                 out_file.write (file_data, recv_len);
             }
             dataSocket.close ();
@@ -153,7 +157,7 @@ bool FTPServer::processRequest (string command, string args, Socket control)
                                     "File receive success").getString ());
         }
     }
-    else if (command == "PORT")
+    else if (command == PORT)
     {
         int i = args.find (":");
         string hostname = args.substr (0, i);
@@ -170,7 +174,7 @@ bool FTPServer::processRequest (string command, string args, Socket control)
                                     "Connection Success").getString ());
         }
     }
-    else if (command == "QUIT")
+    else if (command == QUIT)
     {
         control.send (Response (SERVICE_CLOSE, "Terminating.").getString ());
         return true;
