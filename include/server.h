@@ -15,6 +15,7 @@
 
 #include <string>
 #include <cstdio>
+#include <fstream>
 #include <sstream>
 #include <iostream>
 

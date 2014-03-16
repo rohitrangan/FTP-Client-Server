@@ -25,20 +25,6 @@ FTPServer::FTPServer (int port) : listenPort (port)
 {
 }
 
-void FTPServer::serveConnection (Socket control)
-{
-    /* Sending a reply. */
-    string recv_data;
-    control.send (Response (SERVICE_READY, SERVER_NAME).getString ());
-
-    while ((recv_data = control.recv (RECV_SIZE)).length () > 0)
-    {
-        //Request r1 = Request::parseRequest (recv_data);
-        //if (processRequest (r1.getCommand (), r1.getArg ()))
-        //    break;
-    }
-}
-
 int FTPServer::start ()
 {
     int status;
@@ -57,6 +43,23 @@ int FTPServer::start ()
     }
 
     return 0;
+}
+
+void FTPServer::serveConnection (Socket control)
+{
+    /* Sending a reply. */
+    string recv_data;
+    control.send (Response (SERVICE_READY, SERVER_NAME).getString ());
+
+    while ((recv_data = control.recv (RECV_SIZE)).length () > 0)
+    {
+        Request r1 = Request::parseRequest (recv_data);
+        if (processRequest (r1.getCommand (), r1.getArg ()))
+        {
+            control.close ();
+            break;
+        }
+    }
 }
 
 bool FTPServer::processRequest (string command, string args, Socket control)
@@ -98,6 +101,57 @@ bool FTPServer::processRequest (string command, string args, Socket control)
         dataSocket.close ();
         control.send (Response (DATA_CONN_CLOSE, "Success").getString ());
     }
+    else if (command == "RETR")
+    {
+        ifstream in_file;
+        in_file.open (args.c_str (), ios::in | ios::ate);
+        if (!in_file.is_open ())
+        {
+            dataSocket.close ();
+            control.send (Response (FILE_NOT_FOUND,
+                                    "File not found").getString ());
+        }
+        else {
+            int file_len = (int)in_file.tellg ();
+            in_file.seekg (0, ios::beg);
+            char* file_data = new char[file_len] ();
+            in_file.read (file_data, file_len);
+            control.send (Response (TRANSFER_START,
+                                    "Sending file").getString ());
+            dataSocket.send (file_data, file_len);
+            dataSocket.close ();
+            control.send (Response (DATA_CONN_CLOSE,
+                                    "File send success").getString ());
+            in_file.close ();
+            delete[] file_data;
+        }
+    }
+    else if (command == "STOR")
+    {
+        ofstream out_file;
+        out_file.open (args.c_str (), ios::out);
+        if (!out_file.is_open ())
+        {
+            dataSocket.close ();
+            control.send (Response (FILE_NOT_FOUND,
+                                    "File open error").getString ());
+        }
+        else {
+            char file_data[RECV_SIZE];
+            control.send (Response (TRANSFER_START,
+                                    "Start file send").getString ());
+            int recv_len;
+            while ((recv_len = dataSocket.recv (file_data, RECV_SIZE-1)) > 0)
+            {
+                file_data[recv_len] = '\0';
+                out_file.write (file_data, recv_len);
+            }
+            dataSocket.close ();
+            out_file.close ();
+            control.send (Response (DATA_CONN_CLOSE,
+                                    "File receive success").getString ());
+        }
+    }
     else if (command == "PORT")
     {
         int i = args.find (":");
@@ -118,5 +172,7 @@ bool FTPServer::processRequest (string command, string args, Socket control)
     else if (command == "QUIT")
     {
         control.send (Response (SERVICE_CLOSE, "Terminating.").getString ());
+        return true;
     }
+    return false;
 }

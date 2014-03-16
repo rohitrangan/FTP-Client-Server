@@ -9,6 +9,7 @@
 #ifndef LAB3_RETURN_CODE_H_
 #define LAB3_RETURN_CODE_H_
 
+#define TRANSFER_START  125
 #define OPENING_DATA    150
 #define GENERIC_SUCCESS 200
 #define SERVICE_READY   220
