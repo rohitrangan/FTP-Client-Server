@@ -41,14 +41,14 @@ public:
     int send (char* data, size_t size);
     string recv (size_t len);
     ssize_t recv (char* data, size_t len);
-    int bind ();
+    int bind (int port);
     int listen (int backlog);
     Socket accept ();
     string getSourceAddr ();
     int getSourcePort ();
     string getDestAddr ();
     int getDestPort ();
+    int close ();
 };
 
 #endif  /* LAB3_SOCKET_H_ */
-

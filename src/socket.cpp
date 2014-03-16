@@ -73,7 +73,7 @@ ssize_t Socket::recv (char* data, int len)
     return ::recv (sockFD, data, len, 0);
 }
 
-int Socket::bind ()
+int Socket::bind (int port)
 {
     sockaddr_in myaddr;
     memset ((char*)&myaddr, 0, sizeof(myaddr));
@@ -129,6 +129,11 @@ int Socket::getDestPort ()
     socklen_t addr_size;
     getpeername (sockFD, (sockaddr*)&dest_addr, &addr_size);
     return ntohs (dest_addr.sin_port);
+}
+
+int Socket::close ()
+{
+    return ::close (socketFD);
 }
 
 Socket::~Socket ()
