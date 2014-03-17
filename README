@@ -5,7 +5,7 @@ Rohit Rangan
 11012333
 
 Siddharth Ancha
-110101xx
+11010175
 
 -------------------------------------------------------------------------------
 PROJECT DESIGN
@@ -133,35 +133,124 @@ PROJECT DIRECTORY STRUCTURE
 -------------------------------------------------------------------------------
 
 --{root}                    - The assignment's root directory.
+  +--Makefile               - The Makefile for compiling the code.
   +--README                 - This file!
+  +--include/               - Contains the header files.
+  |  +--client.h            - Client header file.
+  |  +--request.h           - FTP client request header file.
+  |  +--response.h          - FTP server response header file.
+  |  +--return_code.h       - FTP server return codes.
+  |  +--server.h            - Server header file.
+  |  +--socket.h            - Wrapper for UNIX socket implementation.
+  +--src/                   - Contains the source code.
+  |  +--client.cpp          - Client source code.
+  |  +--client_main.cpp     - Client main function.
+  |  +--request.cpp         - FTP client request implementation.
+  |  +--response.cpp        - FTP server response implementation.
+  |  +--server.cpp          - Server source code.
+  |  +--server_main.cpp     - Server main code.
+  |  +--socket.cpp          - UNIX socket implemented as a class.
 
 -------------------------------------------------------------------------------
 REQUIREMENTS
 -------------------------------------------------------------------------------
 
+1. GCC or clang (To compile the C++ code).
+
+2. GNU Make.
 
 -------------------------------------------------------------------------------
 INSTRUCTIONS TO COMPILE
 -------------------------------------------------------------------------------
 
+1. At the root directory (the directory containing this README), execute the
+   "make" command.
+
+2. After make finishes executing, the executables will be named - client and
+   server, for the client and the server respectively.
 
 -------------------------------------------------------------------------------
 INSTRUCTIONS TO RUN THE CODE
 -------------------------------------------------------------------------------
 
+1. To run the server, execute "./server PORT_NUMBER" if the server program is
+   in the current directory.
+   PORT_NUMBER is the port which the server listens to, for any incoming
+   connections. It must be positive and less than 65535.
+
+   To terminate the server gracefully, give the input "CTRL + C". It will then
+   initiate server shutdown as indicated in the sample output of the server.
+
+2. To run the client, execute "./client HOST_NAME PORT" if the client program
+   is in the current directory.
+   HOST_NAME is the URL or the IP Address of the server we connect to.
+   PORT specifies the listen port of the server.
 
 -------------------------------------------------------------------------------
 SAMPLE OUTPUT - SERVER
 -------------------------------------------------------------------------------
+
+RangansMacBookPro:FTP-Client-Server rohitrangan$ ./server 1221
+Server Initialized!
+
+Accepted connection from - 127.0.0.1:53630
+
+^C
+Initiating Server Shutdown...
+Closing All Connections... Success!
+
+All Connections Closed. Exiting...
 
 
 -------------------------------------------------------------------------------
 SAMPLE OUTPUT - CLIENT
 -------------------------------------------------------------------------------
 
+RangansMacBookPro:FTP-Client-Server rohitrangan$ ./client 127.0.0.1 1221
+220 FTP-Server
+ftp> pwd
+250 /Users/rohitrangan/Workspace/FTP-Client-Server
+ftp> ls
+200 Connection Success
+150 Sending Directory Information
+
+Makefile
+README
+client
+include
+server
+src
+
+226 Success
+ftp> cd /Users/rohitrangan/Workspace/FTP-Client-Server/src
+250 Changed Directory
+ftp> pwd
+250 /Users/rohitrangan/Workspace/FTP-Client-Server/src
+ftp> !pwd 
+/Users/rohitrangan/Workspace/FTP-Client-Server
+ftp> get client.cpp
+200 Connection Success
+125 Sending file
+226 File send success
+ftp> !ls
+Makefile
+README
+client
+client.cpp
+include
+server
+src
+ftp> quit
+221 Terminating
+
 
 -------------------------------------------------------------------------------
 NOTE
 -------------------------------------------------------------------------------
+
+1. All terminal commands are given in quotes
+
+2. The code was written and tested on MacOSX 10.7.5 and compiled with
+   clang-425.0.28
 
 -------------------------------------------------------------------------------
