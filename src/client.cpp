@@ -10,10 +10,10 @@
 #include "../include/client.h"
 
 
-FTPClient::FTPClient(string hostname, int hostport, int _dataport){
+FTPClient::FTPClient(string hostname, int hostport, int _dataport) :
+                     controlSocket (), dataSocket ()
+{
     dataport = _dataport;
-    controlSocket = Socket ();
-    dataSocket = Socket ();
     if(dataSocket.bind(dataport) < 0){
         cout << "Couldn't bind data socket.\n";
         exit(1);
@@ -31,7 +31,8 @@ FTPClient::FTPClient(string hostname, int hostport, int _dataport){
     cout << recv_str << endl;
 }
 
-void FTPClient::sendPort(){
+void FTPClient::sendPort()
+{
     stringstream s;
     s << "PORT ";
     string hostname = controlSocket.getSourceAddr();
@@ -43,10 +44,14 @@ void FTPClient::sendPort(){
     controlSocket.send(s.str());
 }
 
-bool FTPClient::processRequest(char* input){
+bool FTPClient::processRequest(char* input)
+{
     Request r;
     r.parseTerminalCommand(input);
-    
+    //cout << "processRequest\n";
+    //cout << r.type << endl;
+    //cout << r.arg << endl;
+    //cout << r.getRequestString() << endl;
     if(r.getCommand() == PWD){
        controlSocket.send(r.getRequestString());
        string recv_str = controlSocket.recv(RECV_SIZE);

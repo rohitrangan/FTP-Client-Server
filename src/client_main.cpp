@@ -31,11 +31,9 @@ int main (int argc, char* argv[])
     {
         cout << "ftp> ";
         getline (cin, command);
-        cout << "command = " << command << endl;
         char tmp_str[1000];
         strncpy (tmp_str, command.c_str (), command.length ());
         tmp_str[command.length ()] = '\0';
-        cout << "tmp_str = " << tmp_str << endl;
         quit = client.processRequest (tmp_str);
     }
 

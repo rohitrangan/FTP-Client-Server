@@ -11,15 +11,13 @@
 Socket::Socket ()
 {
     /* Creating the socket. */
-    int fd;
-    if ((fd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
+    if ((socketFD = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
         int errsv = errno;
         std::cerr << "Cannot Create Socket, Error ";
         std::cerr << errsv << "\n";
         exit (1);
     }
-    socketFD = fd;
 }
 
 Socket::Socket (int socketfd)
@@ -30,19 +28,17 @@ Socket::Socket (int socketfd)
 int Socket::connect (string host, int port)
 {
     /* Determining server's IP address. */
-    const char* server_addr = host.c_str ();
     stringstream s1;
     s1 << port;
-    const char* give_port = s1.str ().c_str ();
     int status;
     addrinfo hints;
     addrinfo* servinfo;
     memset (&hints, 0, sizeof (hints));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    if ((status = getaddrinfo (server_addr, give_port, &hints,
+    if ((status = getaddrinfo (host.c_str (), s1.str ().c_str (), &hints,
                                &servinfo)) != 0)
-        return status;
+        return -1;
 
     /* Connecting to the server. */
     return ::connect (socketFD, servinfo->ai_addr, servinfo->ai_addrlen);
@@ -92,7 +88,8 @@ Socket Socket::accept ()
 {
     sockaddr_storage incoming;
     socklen_t addr_size;
-    return (Socket (::accept (socketFD, (sockaddr*)&incoming, &addr_size)));
+    int tmp_fd = ::accept (socketFD, (sockaddr*)&incoming, &addr_size);
+    return (Socket (tmp_fd));
 }
 
 string Socket::getSourceAddr ()

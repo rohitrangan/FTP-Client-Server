@@ -22,9 +22,9 @@ string FTPServer::ls (string arg)
     return s1.str ();
 }
 
-FTPServer::FTPServer (int port) : listenPort (port)
+FTPServer::FTPServer (int port) : listenPort (port), listenSocket (),
+                                  dataSocket ()
 {
-    listenSocket = Socket ();
 }
 
 int FTPServer::start ()
