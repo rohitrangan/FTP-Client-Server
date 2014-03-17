@@ -15,6 +15,7 @@
 #include "../include/return_code.h"
 
 #include <string>
+#include <cstring>
 #include <cstdio>
 #include <fstream>
 #include <sstream>

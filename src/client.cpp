@@ -18,6 +18,11 @@ FTPClient::FTPClient(string hostname, int hostport, int _dataport) :
         cout << "Couldn't bind data socket.\n";
         exit(1);
     }
+    
+    if(dataSocket.listen(BACKLOG) < 0){
+        cout << "Couldn't listen on data socket.\n";
+        exit(1);
+    }
     if(controlSocket.connect(hostname, hostport) < 0){
         cout << "Unable to connect to server.\n";
         exit(1);
@@ -31,7 +36,7 @@ FTPClient::FTPClient(string hostname, int hostport, int _dataport) :
     cout << recv_str;
 }
 
-void FTPClient::sendPort()
+bool FTPClient::establishPORT(Socket& incoming)
 {
     stringstream s;
     s << "PORT ";
@@ -42,21 +47,31 @@ void FTPClient::sendPort()
     }
     s << ',' << port/256 << ',' << port%256 << DELIM;
     controlSocket.send(s.str());
+    Response r = Response::parseResponse(controlSocket.recv(RECV_SIZE));
+    if(r.getReturnCode() == GENERIC_ERROR){
+        cout << r.getArgs() << "\n";
+        cout << "Aborting action.\n";
+        return false;
+    }
+    cout << r.getArgs() << "\n";
+    incoming = dataSocket.accept();
+    return true;
 }
+
 
 bool FTPClient::processRequest(char* input)
 {
     Request r;
     r.parseTerminalCommand(input);
     //cout << "processRequest\n";
-    //cout << r.type << endl;
-    //cout << r.arg << endl;
-    //cout << r.getRequestString() << endl;
+    //cout << r.type << "\n";
+    //cout << r.arg << "\n";
+    //cout << r.getRequestString() << "\n";
     if(r.getCommand() == PWD){
        controlSocket.send(r.getRequestString());
        string recv_str = controlSocket.recv(RECV_SIZE);
        Response r = Response::parseResponse(recv_str);
-       cout << recv_str;
+       cout << r.getArgs() << "\n";
     }
     else if (r.getCommand () == QUIT)
     {
@@ -65,5 +80,7 @@ bool FTPClient::processRequest(char* input)
         cout << recv_str;
         return true;
     }
+
     return false;
-}   
+}
+

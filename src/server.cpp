@@ -162,11 +162,15 @@ bool FTPServer::processRequest (commands command, string args, Socket control)
     }
     else if (command == PORT)
     {
-        int i = args.find (":");
-        string hostname = args.substr (0, i);
-        string port_str = args.substr (i+1, string::npos);
-        int port = atoi (port_str.c_str ());
-        if (dataSocket.connect (hostname, port) < 0)
+        stringstream s_ip, s_port1, s_port2;
+        char argstring[RECV_SIZE];
+        strcpy(argstring, args.c_str());
+        s_ip << strtok(argstring, ",") << "." << strtok(NULL, ",") << "." << strtok(NULL, ",") << "." << strtok(NULL, ",");
+        s_port1 << strtok(NULL, ",");
+        s_port1 << strtok(NULL, ",");
+        int port = atoi(s_port1.str().c_str())*256 + atoi(s_port2.str().c_str());
+        string ip = s_ip.str();
+        if (dataSocket.connect (ip, port) < 0)
         {
             control.send (Response (GENERIC_ERROR,
                                     "Connection Error").getString ());

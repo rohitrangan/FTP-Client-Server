@@ -25,12 +25,14 @@ class FTPClient {
     Socket dataSocket;
     int dataport;
 
-    void sendPort();
-
  public:
 
     FTPClient(string hostname, int hostport, int _dataport);
     bool processRequest(char* input);
+    
+    //Returns true if PORT command succeded and return incoming port through
+    //'incoming'. Returns false if PORT response failure.
+    bool establishPORT(Socket& incoming);
 
 };
 
