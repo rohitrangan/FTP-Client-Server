@@ -8,6 +8,9 @@
 
 #include "../include/client.h"
 
+#include <ctime>
+#include <cstdlib>
+
 int main (int argc, char* argv[])
 {
     if (argc != 3)
@@ -23,10 +26,13 @@ int main (int argc, char* argv[])
         return 1;
     }
 
-    int dataport = 12341;
+    srand (time (NULL));
+    int dataport = rand () % 60000;
+    dataport += 5000;
     FTPClient client (string (argv[1]), port, dataport);
     bool quit = false;
     string command;
+    cout << "Client data port = " << dataport << endl;
     while (!quit)
     {
         cout << "ftp> ";

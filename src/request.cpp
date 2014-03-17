@@ -21,29 +21,68 @@ int Request::parseTerminalCommand(char* input){
 
 	//Error if there are more than 2 words in the terminal command.
 	if(strtok(NULL, " ")){
+        type = UNKNOWN;
 		cerr << "Error: Malformed command. Contains more than 2 words.\n";
 		return 0;
 	}
     //cout << "word1 = " << word1 << endl;
-	if(string(word1) == "put"){
+	if (string(word1) == "put")
+    {
 		type = STOR;
 	}
-	else if(string(word1) == "get"){
+	else if (string(word1) == "get")
+    {
 		type = RETR;
 	}
-	else if(string(word1) == "ls"){
+	else if (string(word1) == "ls")
+    {
 		type = LIST;
 	}
-	else if(string(word1) == "cd"){
+	else if (string(word1) == "cd")
+    {
 		type = CWD;
 	}
-	else if(string(word1) == "pwd"){
+	else if (string(word1) == "pwd")
+    {
 		type = PWD;
 	}
-	else if(string(word1) == "quit"){
+	else if (string(word1) == "quit")
+    {
 		type = QUIT;
 	}
-	else{
+    else if (string (word1) == "!ls")
+    {
+        string command = "ls";
+        FILE* file = popen(command.c_str (), "r");
+        char fname[200];
+        while (fgets (fname, 200, file))
+        {
+            cout << fname;
+        }
+        pclose(file);
+        type = UNKNOWN;
+        return 2;
+    }
+    else if (string (word1) == "!pwd")
+    {
+        char curr_dir[1024];
+        getcwd (curr_dir, 1024);
+        if (!curr_dir)
+            cerr << "ERROR! Cannot find pwd.\n";
+        else
+            cout << curr_dir << endl;
+        type = UNKNOWN;
+        return 2;
+    }
+    else if (string (word1) == "!cd")
+    {
+        if (chdir (word2) < 0)
+            cerr << "ERROR! Cannot change directory.\n";
+        type = UNKNOWN;
+        return 2;
+    }
+	else
+    {
         type = UNKNOWN;
 		cerr << "Error: Unrecognized Command.\n";
 		return 0;
@@ -107,6 +146,17 @@ string Request::getRequestString(){
         s << "QUIT";
     else if (type == CWD)
         s << "CWD " << arg;
+    else if (type == LIST)
+    {
+        if (arg != "")
+            s << "LIST " << arg;
+        else
+            s << "LIST";
+    }
+    else if (type == RETR)
+        s << "RETR " << arg;
+    else if (type == STOR)
+        s << "STOR " << arg;
     s << DELIM;
     return s.str();
 }

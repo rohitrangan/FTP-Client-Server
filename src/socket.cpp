@@ -10,14 +10,6 @@
 
 Socket::Socket ()
 {
-    /* Creating the socket. */
-    if ((socketFD = socket (AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        int errsv = errno;
-        std::cerr << "Cannot Create Socket, Error ";
-        std::cerr << errsv << "\n";
-        exit (1);
-    }
 }
 
 Socket::Socket (int socketfd)
@@ -27,6 +19,14 @@ Socket::Socket (int socketfd)
 
 int Socket::connect (string host, int port)
 {
+    /* Creating the socket. */
+    if ((socketFD = socket (AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        int errsv = errno;
+        std::cerr << "Cannot Create Socket, Error ";
+        std::cerr << errsv << "\n";
+        exit (1);
+    }
     /* Determining server's IP address. */
     stringstream s1;
     s1 << port;
@@ -71,6 +71,14 @@ ssize_t Socket::recv (char* data, size_t len)
 
 int Socket::bind (int port)
 {
+    /* Creating the socket. */
+    if ((socketFD = socket (AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        int errsv = errno;
+        std::cerr << "Cannot Create Socket, Error ";
+        std::cerr << errsv << "\n";
+        exit (1);
+    }
     sockaddr_in myaddr;
     memset ((char*)&myaddr, 0, sizeof(myaddr));
     myaddr.sin_family = AF_INET;
@@ -96,7 +104,7 @@ string Socket::getSourceAddr ()
 {
     char src[INET_ADDRSTRLEN];
     sockaddr_storage tmp;
-    socklen_t addr_size;
+    socklen_t addr_size = sizeof (sockaddr);
     getpeername (socketFD, (sockaddr*)&tmp, &addr_size);
     sockaddr_in* src_addr = (sockaddr_in*)&tmp;
     inet_ntop (AF_INET, &src_addr->sin_addr, src, sizeof (src));
@@ -106,7 +114,7 @@ string Socket::getSourceAddr ()
 int Socket::getSourcePort ()
 {
     sockaddr_in src_addr;
-    socklen_t addr_size;
+    socklen_t addr_size = sizeof (sockaddr);
     getsockname (socketFD, (sockaddr*)&src_addr, &addr_size);
     return ntohs (src_addr.sin_port);
 }
@@ -115,7 +123,7 @@ string Socket::getDestAddr ()
 {
     char dest[INET_ADDRSTRLEN];
     sockaddr_storage tmp;
-    socklen_t addr_size;
+    socklen_t addr_size = sizeof (sockaddr);
     getpeername (socketFD, (sockaddr*)&tmp, &addr_size);
     sockaddr_in* dest_addr = (sockaddr_in*)&tmp;
     inet_ntop (AF_INET, &dest_addr->sin_addr, dest, sizeof (dest));
@@ -125,7 +133,7 @@ string Socket::getDestAddr ()
 int Socket::getDestPort ()
 {
     sockaddr_in dest_addr;
-    socklen_t addr_size;
+    socklen_t addr_size = sizeof (sockaddr);
     getpeername (socketFD, (sockaddr*)&dest_addr, &addr_size);
     return ntohs (dest_addr.sin_port);
 }

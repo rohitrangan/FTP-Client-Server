@@ -121,12 +121,12 @@ bool FTPServer::processRequest (commands command, string args, Socket control)
                                     "File not found").getString ());
         }
         else {
+            control.send (Response (TRANSFER_START,
+                                    "Sending file").getString ());
             int file_len = (int)in_file.tellg ();
             in_file.seekg (0, ios::beg);
             char* file_data = new char[file_len] ();
             in_file.read (file_data, file_len);
-            control.send (Response (TRANSFER_START,
-                                    "Sending file").getString ());
             dataSocket.send (file_data, file_len);
             dataSocket.close ();
             control.send (Response (DATA_CONN_CLOSE,
@@ -165,9 +165,10 @@ bool FTPServer::processRequest (commands command, string args, Socket control)
         stringstream s_ip, s_port1, s_port2;
         char argstring[RECV_SIZE];
         strcpy(argstring, args.c_str());
-        s_ip << strtok(argstring, ",") << "." << strtok(NULL, ",") << "." << strtok(NULL, ",") << "." << strtok(NULL, ",");
+        s_ip << strtok(argstring, ",") << "." << strtok(NULL, ",") << ".";
+        s_ip << strtok(NULL, ",") << "." << strtok(NULL, ",");
         s_port1 << strtok(NULL, ",");
-        s_port1 << strtok(NULL, ",");
+        s_port2 << strtok(NULL, ",");
         int port = atoi(s_port1.str().c_str())*256 + atoi(s_port2.str().c_str());
         string ip = s_ip.str();
         if (dataSocket.connect (ip, port) < 0)

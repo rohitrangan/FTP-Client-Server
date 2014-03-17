@@ -9,11 +9,13 @@
 #ifndef LAB3_REQUEST_H_
 #define LAB3_REQUEST_H_
 
-#include "socket.h"
+#include "../include/socket.h"
 
+#include <string>
+#include <cstdio>
 #include <cstring>
 #include <sstream>
-#include <string>
+
 #include <sys/stat.h>
 
 enum commands {

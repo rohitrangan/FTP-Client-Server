@@ -10,12 +10,13 @@
 #ifndef LAB3_CLIENT_H_
 #define LAB3_CLIENT_H_
 
+#include "../include/socket.h"
 #include "../include/request.h"
 #include "../include/response.h"
 #include "../include/return_code.h"
-#include "../include/socket.h"
 
 #include <string>
+#include <fstream>
 #include <iostream>
 
 class FTPClient {
