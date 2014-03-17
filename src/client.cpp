@@ -28,7 +28,7 @@ FTPClient::FTPClient(string hostname, int hostport, int _dataport) :
     //    cout << "Service Ready confirmation malformed. Terminating...\n";
     //    exit(1);
     //}
-    cout << recv_str << endl;
+    cout << recv_str;
 }
 
 void FTPClient::sendPort()
@@ -56,13 +56,13 @@ bool FTPClient::processRequest(char* input)
        controlSocket.send(r.getRequestString());
        string recv_str = controlSocket.recv(RECV_SIZE);
        Response r = Response::parseResponse(recv_str);
-       cout << recv_str << endl;
+       cout << recv_str;
     }
     else if (r.getCommand () == QUIT)
     {
         controlSocket.send (r.getRequestString ());
         string recv_str = controlSocket.recv (RECV_SIZE);
-        cout << recv_str << endl;
+        cout << recv_str;
         return true;
     }
     return false;

@@ -67,8 +67,10 @@ void FTPServer::serveConnection (Socket control)
     }
 }
 
-//Returns true if request processed and no more requests are expected (QUIT), and
-//false if further requests are expected.
+/*
+ * Returns true if request processed and no more requests are expected (QUIT)
+ * and false if further requests are expected.
+ */
 bool FTPServer::processRequest (commands command, string args, Socket control)
 {
     if (command == CWD)
@@ -177,7 +179,7 @@ bool FTPServer::processRequest (commands command, string args, Socket control)
     }
     else if (command == QUIT)
     {
-        control.send (Response (SERVICE_CLOSE, "Terminating.").getString ());
+        control.send (Response (SERVICE_CLOSE, "Terminating").getString ());
         return true;
     }
     return false;

@@ -100,8 +100,10 @@ string Request::getArg(){
 
 string Request::getRequestString(){
     stringstream s;
-    if(type == PWD)
+    if (type == PWD)
         s << "PWD";
+    else if (type == QUIT)
+        s << "QUIT";
     s << DELIM;
     return s.str();
 }
