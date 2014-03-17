@@ -105,7 +105,7 @@ string Socket::getSourceAddr ()
     char src[INET_ADDRSTRLEN];
     sockaddr_storage tmp;
     socklen_t addr_size = sizeof (sockaddr);
-    getpeername (socketFD, (sockaddr*)&tmp, &addr_size);
+    getsockname (socketFD, (sockaddr*)&tmp, &addr_size);
     sockaddr_in* src_addr = (sockaddr_in*)&tmp;
     inet_ntop (AF_INET, &src_addr->sin_addr, src, sizeof (src));
     return string (src);

@@ -191,8 +191,10 @@ bool FTPServer::processRequest (commands command, string args, Socket control)
         stringstream s_ip, s_port1, s_port2;
         char argstring[RECV_SIZE];
         strcpy(argstring, args.c_str());
-        s_ip << strtok(argstring, ",") << "." << strtok(NULL, ",") << ".";
-        s_ip << strtok(NULL, ",") << "." << strtok(NULL, ",");
+        s_ip << strtok(argstring, ",") << ".";
+        s_ip << strtok(NULL, ",") << ".";
+        s_ip << strtok(NULL, ",") << ".";
+        s_ip << strtok(NULL, ",");
         s_port1 << strtok(NULL, ",");
         s_port2 << strtok(NULL, ",");
         int port = atoi(s_port1.str().c_str())*256 + atoi(s_port2.str().c_str());

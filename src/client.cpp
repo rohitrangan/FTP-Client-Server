@@ -29,10 +29,6 @@ FTPClient::FTPClient(string hostname, int hostport, int _dataport) :
     }
     string recv_str = controlSocket.recv(RECV_SIZE);
     Response r = Response::parseResponse(recv_str);
-    //if(r.getReturnCode() != SERVICE_READY){
-    //    cout << "Service Ready confirmation malformed. Terminating...\n";
-    //    exit(1);
-    //}
     cout << recv_str;
 }
 
@@ -67,10 +63,6 @@ bool FTPClient::processRequest(char* input)
     if (ret_val == 2)
         return false;
 
-    //cout << "processRequest\n";
-    //cout << r.type << "\n";
-    //cout << r.arg << "\n";
-    //cout << r.getRequestString() << "\n";
     if(r.getCommand () == PWD)
     {
        controlSocket.send (r.getRequestString ());
@@ -90,7 +82,7 @@ bool FTPClient::processRequest(char* input)
         Socket datSock;
         if (!establishPORT (datSock))
         {
-            cout << "Data connection failed." << endl;
+            cerr << "ERROR: Data connection failed." << endl;
             return false;
         }
         controlSocket.send (r.getRequestString ());
@@ -109,7 +101,7 @@ bool FTPClient::processRequest(char* input)
         Socket datSock;
         if (!establishPORT (datSock))
         {
-            cout << "Data connection failed." << endl;
+            cerr << "ERROR: Data connection failed." << endl;
             return false;
         }
         controlSocket.send (r.getRequestString ());

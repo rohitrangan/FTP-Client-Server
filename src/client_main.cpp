@@ -32,7 +32,6 @@ int main (int argc, char* argv[])
     FTPClient client (string (argv[1]), port, dataport);
     bool quit = false;
     string command;
-    cout << "Client data port = " << dataport << endl;
     while (!quit)
     {
         cout << "ftp> ";
