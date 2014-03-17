@@ -105,11 +105,10 @@ string Socket::getSourceAddr ()
 
 int Socket::getSourcePort ()
 {
-    sockaddr_storage tmp;
+    sockaddr_in src_addr;
     socklen_t addr_size;
-    getsockname (socketFD, (sockaddr*)&tmp, &addr_size);
-    sockaddr_in* src_addr = (sockaddr_in*)&tmp;
-    return ntohs (src_addr->sin_port);
+    getsockname (socketFD, (sockaddr*)&src_addr, &addr_size);
+    return ntohs (src_addr.sin_port);
 }
 
 string Socket::getDestAddr ()
@@ -125,11 +124,10 @@ string Socket::getDestAddr ()
 
 int Socket::getDestPort ()
 {
-    sockaddr_storage tmp;
+    sockaddr_in dest_addr;
     socklen_t addr_size;
-    getpeername (socketFD, (sockaddr*)&tmp, &addr_size);
-    sockaddr_in* dest_addr = (sockaddr_in*)&tmp;
-    return ntohs (dest_addr->sin_port);
+    getpeername (socketFD, (sockaddr*)&dest_addr, &addr_size);
+    return ntohs (dest_addr.sin_port);
 }
 
 int Socket::close ()
