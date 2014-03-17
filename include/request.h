@@ -24,6 +24,7 @@ enum commands {
 	QUIT,
 	RETR,
 	STOR,
+    UNKNOWN
 };
 
 class Request {

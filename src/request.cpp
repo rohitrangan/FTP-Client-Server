@@ -44,6 +44,7 @@ int Request::parseTerminalCommand(char* input){
 		type = QUIT;
 	}
 	else{
+        type = UNKNOWN;
 		cerr << "Error: Unrecognized Command.\n";
 		return 0;
 	}
@@ -104,6 +105,8 @@ string Request::getRequestString(){
         s << "PWD";
     else if (type == QUIT)
         s << "QUIT";
+    else if (type == CWD)
+        s << "CWD " << arg;
     s << DELIM;
     return s.str();
 }

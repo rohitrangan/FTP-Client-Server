@@ -186,5 +186,10 @@ bool FTPServer::processRequest (commands command, string args, Socket control)
         control.send (Response (SERVICE_CLOSE, "Terminating").getString ());
         return true;
     }
+    else
+    {
+        control.send (Response (GENERIC_ERROR,
+                      "Unknown Command").getString ());
+    }
     return false;
 }

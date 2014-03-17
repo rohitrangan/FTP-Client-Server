@@ -73,6 +73,13 @@ bool FTPClient::processRequest(char* input)
        Response r = Response::parseResponse(recv_str);
        cout << r.getArgs() << "\n";
     }
+    else if (r.getCommand () == CWD)
+    {
+        controlSocket.send (r.getRequestString ());
+        string recv_str = controlSocket.recv (RECV_SIZE);
+        Response r = Response::parseResponse (recv_str);
+        cout << recv_str;
+    }
     else if (r.getCommand () == QUIT)
     {
         controlSocket.send (r.getRequestString ());
