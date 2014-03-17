@@ -95,37 +95,41 @@ Socket Socket::accept ()
 string Socket::getSourceAddr ()
 {
     char src[INET_ADDRSTRLEN];
-    sockaddr_in src_addr;
+    sockaddr_storage tmp;
     socklen_t addr_size;
-    getsockname (socketFD, (sockaddr*)&src_addr, &addr_size);
-    inet_ntop (AF_INET, &src_addr.sin_addr, src, sizeof (src));
+    getpeername (socketFD, (sockaddr*)&tmp, &addr_size);
+    sockaddr_in* src_addr = (sockaddr_in*)&tmp;
+    inet_ntop (AF_INET, &src_addr->sin_addr, src, sizeof (src));
     return string (src);
 }
 
 int Socket::getSourcePort ()
 {
-    sockaddr_in src_addr;
+    sockaddr_storage tmp;
     socklen_t addr_size;
-    getsockname (socketFD, (sockaddr*)&src_addr, &addr_size);
-    return ntohs (src_addr.sin_port);
+    getsockname (socketFD, (sockaddr*)&tmp, &addr_size);
+    sockaddr_in* src_addr = (sockaddr_in*)&tmp;
+    return ntohs (src_addr->sin_port);
 }
 
 string Socket::getDestAddr ()
 {
     char dest[INET_ADDRSTRLEN];
-    sockaddr_in dest_addr;
+    sockaddr_storage tmp;
     socklen_t addr_size;
-    getpeername (socketFD, (sockaddr*)&dest_addr, &addr_size);
-    inet_ntop (AF_INET, &dest_addr.sin_addr, dest, sizeof (dest));
+    getpeername (socketFD, (sockaddr*)&tmp, &addr_size);
+    sockaddr_in* dest_addr = (sockaddr_in*)&tmp;
+    inet_ntop (AF_INET, &dest_addr->sin_addr, dest, sizeof (dest));
     return string (dest);
 }
 
 int Socket::getDestPort ()
 {
-    sockaddr_in dest_addr;
+    sockaddr_storage tmp;
     socklen_t addr_size;
-    getpeername (socketFD, (sockaddr*)&dest_addr, &addr_size);
-    return ntohs (dest_addr.sin_port);
+    getpeername (socketFD, (sockaddr*)&tmp, &addr_size);
+    sockaddr_in* dest_addr = (sockaddr_in*)&tmp;
+    return ntohs (dest_addr->sin_port);
 }
 
 int Socket::close ()
