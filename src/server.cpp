@@ -87,6 +87,8 @@ void FTPServer::serveConnection (Socket control)
         r1.parseControlMessage(recv_data_str);
         if (processRequest (r1.getCommand (), r1.getArg (), control))
         {
+            cout << "Connection closed from - " << control.getDestAddr ();
+            cout << ":" << control.getDestPort () << "\n\n";
             control.close ();
             break;
         }
