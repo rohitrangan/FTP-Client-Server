@@ -15,8 +15,9 @@
 #include "../include/return_code.h"
 
 #include <string>
-#include <cstring>
 #include <cstdio>
+#include <csignal>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -25,7 +26,6 @@
 
 using namespace std;
 
-#define DISP_ERR    "ERROR! "
 #define SERVER_NAME "FTP-Server"
 
 class FTPServer
@@ -38,10 +38,14 @@ private:
     string ls (string arg);
 
 public:
+    FTPServer ();
     FTPServer (int port);
     int start ();
     void serveConnection (Socket control);
     bool processRequest (commands command, string args, Socket control);
+    void stop ();
 };
+
+void sigchild_handler (int s);
 
 #endif  /* LAB3_SERVER_H_ */

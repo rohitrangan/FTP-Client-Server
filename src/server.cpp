@@ -8,6 +8,12 @@
 
 #include "../include/server.h"
 
+void sigchld_handler(int s)
+{
+    (void) s;
+    while (waitpid (-1, NULL, WNOHANG) > 0);
+}
+
 string FTPServer::ls (string arg)
 {
     string command = "ls " + arg;
@@ -20,6 +26,10 @@ string FTPServer::ls (string arg)
     }
     pclose(file);
     return s1.str ();
+}
+
+FTPServer::FTPServer () : listenPort (0), listenSocket (), dataSocket ()
+{
 }
 
 FTPServer::FTPServer (int port) : listenPort (port), listenSocket (),
@@ -35,13 +45,29 @@ int FTPServer::start ()
     if ((status = listenSocket.listen (BACKLOG)) < 0)
         return status;
 
+    struct sigaction sa;
+    sa.sa_handler = sigchld_handler;
+    sigemptyset (&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    if (sigaction (SIGCHLD, &sa, NULL) == -1)
+    {
+        cerr << "ERROR! sigaction failed.\n";
+        exit(1);
+    }
+
     cout << "Server Initialized!\n\n";
     while (true)
     {
         Socket incoming = listenSocket.accept ();
         cout << "Accepted connection from - " << incoming.getDestAddr ();
         cout << ":" << incoming.getDestPort () << "\n\n";
-        serveConnection (incoming);
+        if (!fork ())
+        {
+            listenSocket.close ();
+            serveConnection (incoming);
+            exit (0);
+        }
+        incoming.close ();
     }
 
     return 0;
@@ -193,4 +219,10 @@ bool FTPServer::processRequest (commands command, string args, Socket control)
                       "Unknown Command").getString ());
     }
     return false;
+}
+
+void FTPServer::stop ()
+{
+    listenSocket.close ();
+    dataSocket.close ();
 }

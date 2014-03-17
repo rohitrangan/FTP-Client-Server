@@ -121,7 +121,7 @@ bool FTPClient::processRequest(char* input)
             datSock.close ();
             return false;
         }
-        cout << recv_str << "\n";
+        cout << recv_str;
         ofstream out_file;
         out_file.open (r.getArg ().c_str (), ios::out);
         if (!out_file.is_open ())
@@ -139,7 +139,7 @@ bool FTPClient::processRequest(char* input)
         datSock.close ();
         out_file.close ();
         recv_str = controlSocket.recv (RECV_SIZE);
-        cout << "\n" << recv_str;
+        cout << recv_str;
     }
     else if (r.getCommand () == STOR)
     {
@@ -158,7 +158,7 @@ bool FTPClient::processRequest(char* input)
             datSock.close ();
             return false;
         }
-        cout << recv_str << "\n";
+        cout << recv_str;
         ifstream in_file;
         string args = r.getArg ();
         in_file.open (args.c_str (), ios::in | ios::ate);
@@ -176,7 +176,7 @@ bool FTPClient::processRequest(char* input)
         datSock.close ();
         in_file.close ();
         recv_str = controlSocket.recv (RECV_SIZE);
-        cout << "\n" << recv_str;
+        cout << recv_str;
         delete[] file_data;
     }
     else if (r.getCommand () == QUIT)
